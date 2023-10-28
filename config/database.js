@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 require("dotenv").config();
 
 exports.connect = () => {
+    // it internally returns a promise
     mongoose.connect(process.env.MONGODB_URL, {
         useNewUrlParser:true,    
         useUnifiedTopology:true  
