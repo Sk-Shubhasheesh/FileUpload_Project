@@ -31,6 +31,7 @@ function isFileTypeSupported(type, supportedTypes){
 
 async function uploadFileToCloudinary(file, folder){
     const options = {folder}
+    options.resource_type = "auto"
     return await cloudinary.uploader.upload(file.tempFilePath, options);
 }
 //image upload handler
@@ -78,6 +79,55 @@ exports.imageUpload = async(req, res) => {
        res.status(400).json({
         success:false,
         message:"Something went wrong"
+       });
+    }
+}
+
+// video upload handler to cloudinary
+exports.videoUpload = async(req, res) => {
+    try {
+       // fetch data from request
+       const{name, tags, email} = req.body;
+       const  file = req.files.videoFile;
+      
+       // 5MB limit
+       if(file.size > 5 * 1024 * 1024) { 
+        return res.status(400).json({
+            success: false,
+            message: 'File size exceeds the 5MB limit.'
+        });
+    }
+       //validation
+       const supportedTypes = ["mp4", "mov"];
+       const fileType = file.name.split('.')[1].toLowerCase();
+       // file format not supported
+       if(!isFileTypeSupported(fileType, supportedTypes)){
+        return res.status(400).json({
+            success:false,
+            message:'File format is not supported'
+        });
+       }
+     // if file format supported
+     const response = await uploadFileToCloudinary(file, "content");
+     console.log(response);
+     // save entry into db
+     const fileData = await File.create({
+        name,
+        tags,
+        email,
+        VideoUrl:response.secure_url,
+    });
+    res.json({
+        success: true,
+        VideoUrl: response.secure_url,
+        message: "Video Successfully Uploaded"
+    });
+
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({
+          success:false,
+          message:"Something went wrong"
        });
     }
 }
