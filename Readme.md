@@ -7,3 +7,5 @@
 
 ### Upload video into Cloudinary
 ![Alt text](<Postman Image/FileUpload 3.png>)
+### Upload image into compress form into clodinary
+![FileUpload 4](https://github.com/Sk-Shubhasheesh/FileUpload_Project/assets/72690479/79c6e9ab-2836-4ee3-9b04-32e22391742b)
